@@ -161,6 +161,7 @@ jobs:
           python3 - <<EOF
           import os
           import random
+          import time
           import google.generativeai as genai
 
           raw = os.getenv("GEMINI_API_KEYS", "")
@@ -168,10 +169,9 @@ jobs:
           if not keys:
               raise RuntimeError("未設定 GEMINI_API_KEYS 或內容為空")
 
-          api_key = random.choice(keys)
-          print(f"已隨機選取 1 把 key(共 {len(keys)} 把可用)")
-
-          genai.configure(api_key=api_key)
+          # 打亂順序,避免多個 workflow 同時都從第一把 key 開始
+          random.shuffle(keys)
+          print(f"共 {len(keys)} 把 key 可用,依序嘗試")
 
           diff = open("pr_diff.txt", encoding="utf-8").read()
           prompt = f"""你是一位資深軟體工程師。
@@ -193,9 +193,23 @@ jobs:
           {diff}
           """
 
-          model = genai.GenerativeModel("gemini-2.5-flash")
-          response = model.generate_content(prompt)
-          review = getattr(response, "text", str(response))
+          review = None
+          last_error = None
+          for i, api_key in enumerate(keys, 1):
+              try:
+                  genai.configure(api_key=api_key)
+                  model = genai.GenerativeModel("gemini-2.5-flash")
+                  response = model.generate_content(prompt)
+                  review = getattr(response, "text", str(response))
+                  print(f"✅ 第 {i}/{len(keys)} 把 key 成功")
+                  break
+              except Exception as e:
+                  last_error = e
+                  print(f"⚠️ 第 {i}/{len(keys)} 把 key 失敗: {type(e).__name__}")
+                  time.sleep(2)
+
+          if review is None:
+              raise RuntimeError(f"所有 {len(keys)} 把 key 皆失敗,最後錯誤: {last_error}")
 
           with open("review_result.md", "w", encoding="utf-8") as f:
               f.write(review)
