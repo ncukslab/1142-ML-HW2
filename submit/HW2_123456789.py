@@ -18,11 +18,15 @@ def handle_missing(df):
     return df
 
 
-def remove_outliers(df):
-    mean = df['Fare'].mean()
-    std = df['Fare'].std()
-    df = df[df['Fare'] <= mean + 3 * std].reset_index(drop=True)
-    return df
+def remove_outliers(df):                                                              
+      while True:                                       
+          mean = df['Fare'].mean()
+          std = df['Fare'].std()
+          mask = df['Fare'] > mean + 3 * std
+          if not mask.any():   # 沒有 outlier 了 → 跳出                                 
+              break
+          df = df[~mask].reset_index(drop=True)                                         
+      return df
 
 
 def encode_features(df):
