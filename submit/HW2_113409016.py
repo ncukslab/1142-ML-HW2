@@ -54,7 +54,7 @@ def split_data(df):
 
 def save_data(df, output_path):
     # TODO 7.1: 將清理後資料輸出為 CSV (encoding='utf-8-sig')
-    pass
+        df.to_csv(output_path, index=False, encoding='utf-8-sig')
 
 
 
