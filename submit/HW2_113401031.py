@@ -15,10 +15,9 @@ def load_data(file_path):
 
 
 def handle_missing(df):
-    # TODO 2.1: 以 Age 中位數填補
-    df['Age'].fillna(df['Age'].median(), inplace=True)
-    # TODO 2.2: 以 Embarked 眾數填補
-    df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+    df['Age'] = df['Age'].fillna(df['Age'].median())
+    df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
+
     return df
 
 
