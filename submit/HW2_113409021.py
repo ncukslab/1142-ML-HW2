@@ -10,7 +10,7 @@ def load_data(file_path):
     df = pd.read_csv(file_path)
 
     # TODO 1.2: 統一欄位首字母大寫，並計算缺失值數量
-    df.columns = df.columns.str.capitalize()
+    df.columns = [c.capitalize() for c in df.columns]
     missing_count = df.isnull().sum().sum()
     return df, int(missing_count)
 
@@ -38,7 +38,7 @@ def remove_outliers(df):
 
 def encode_features(df):
     # TODO 4.1: 使用 pd.get_dummies 對 Sex、Embarked 進行編碼
-    df_encoded = pd.get_dummies(df, columns=['Sex', 'Embarked'], dtype=int, drop_first=True)
+    df_encoded = pd.get_dummies(df, columns=['Sex', 'Embarked'])
 
     return df_encoded
 
