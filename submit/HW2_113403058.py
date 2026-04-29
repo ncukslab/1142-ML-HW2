@@ -29,7 +29,7 @@ def remove_outliers(df):
 
 def encode_features(df):
     # TODO 4.1: 使用 pd.get_dummies 對 Sex、Embarked 進行編碼
-    df_encoded = pd.get_dummies(df, columns=['Sex', 'Embarked'], drop_first=True)
+    df_encoded = pd.get_dummies(df, columns=['Sex', 'Embarked'])
     return df_encoded
 
 
@@ -57,7 +57,7 @@ def split_data(df):
 
 def save_data(df, output_path):
     # TODO 7.1: 將清理後資料輸出為 CSV (encoding='utf-8-sig')
-    pass
+    df.to_csv(output_path, index=False, encoding='utf-8-sig')
 
 
 
