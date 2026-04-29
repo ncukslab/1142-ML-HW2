@@ -17,8 +17,7 @@ def load_data(file_path):
 def handle_missing(df):
     # TODO 2.1: 以 Age 中位數填補
     # TODO 2.2: 以 Embarked 眾數填補
-    df['Age'].fillna(df['Age'].median(), inplace=True)
-    df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+    df = df.fillna({'Age': df['Age'].median(), 'Embarked': df['Embarked'].mode()[0]})
     return df
 
 
@@ -55,7 +54,6 @@ def split_data(df):
 def save_data(df, output_path):
     # TODO 7.1: 將清理後資料輸出為 CSV (encoding='utf-8-sig')
     df.to_csv(output_path, index=False, encoding='utf-8-sig')
-    pass
 
 
 
